@@ -74,15 +74,17 @@ app.get('/buscar/:employeeId', (req, res) => {
     }
   });
 });
+app.use(express.json());
 app.post('/asignartutoria', (req, res) => {
   // Obtener los datos del tutor y el empleado
+
   const { tutorEmployeeCode, employeeIdToAssign } = req.body;
   console.log("Datos recibidos en la solicitud:", tutorEmployeeCode, employeeIdToAssign);
 
   // Realizar las validaciones
   // 1. Verificar si el tutor es el manager del empleado
   const queryTutorManager = "SELECT manager_id FROM hr_v2.employees WHERE employee_id = ?";
-  connection.query(queryTutorManager, tutorEmployeeCode, (error, tutorResults) => {
+  connection.query(queryTutorManager, [tutorEmployeeCode], (error, tutorResults) => {
     if (error) {
       res.status(500).json({ message: 'Error en la consulta SQL' });
     } else {
@@ -125,6 +127,7 @@ app.post('/asignartutoria', (req, res) => {
   });
 });
 
+
 connection.connect((err) => {
   if (err) {
     console.error('Error al conectar a la base de datos: ' + err.message);
@@ -138,5 +141,7 @@ connection.connect((err) => {
   // Escuchar en el puerto 3000
   app.listen(3000, () => {
     console.log('API escuchando en el puerto 3000');
+
+
   });
 });
