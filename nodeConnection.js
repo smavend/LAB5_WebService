@@ -75,6 +75,56 @@ app.get('/buscar/:employeeId', (req, res) => {
   });
 });
 
+app.post('/asignartutoria', (req, res) => {
+  // Obtener los datos del tutor y el empleado
+  const { tutorEmployeeCode, employeeIdToAssign } = req.body;
+
+  // Realizar las validaciones
+  // 1. Verificar si el tutor es el manager del empleado
+  const queryTutorManager = "SELECT manager_id FROM employees WHERE employee_id = ?";
+  connection.query(queryTutorManager, [tutorEmployeeCode], (error, tutorResults) => {
+    if (error) {
+      res.status(500).json({ message: 'Error en la consulta SQL' });
+    } else {
+      if (tutorResults.length === 0) {
+        res.status(400).json({ message: 'El tutor no existe' });
+      } else {
+        const tutorManagerId = tutorResults[0].manager_id;
+        if (tutorManagerId !== employeeIdToAssign) {
+          res.status(400).json({ message: 'No es manager del empleado' });
+        } else {
+          // 2. Verificar si el empleado ya tiene una cita asignada
+          const queryMeetingStatus = "SELECT meeting FROM employees WHERE employee_id = ?";
+          connection.query(queryMeetingStatus, [employeeIdToAssign], (error, meetingResults) => {
+            if (error) {
+              res.status(500).json({ message: 'Error en la consulta SQL' });
+            } else {
+              const meetingStatus = meetingResults[0].meeting;
+              if (meetingStatus === 1) {
+                res.status(400).json({ message: 'El trabajador ya tiene una cita asignada. Elija otro trabajador' });
+              } else {
+                const newMeetingDate = new Date(); // Obtiene la fecha y hora actual
+                newMeetingDate.setDate(newMeetingDate.getDate() + 1); // Suma un día a la fecha actual
+
+                const formattedMeetingDate = newMeetingDate.toISOString().slice(0, 19).replace("T", " "); // Formatea la fecha a 'YYYY-MM-DD HH:mm:ss'
+
+                const updateMeetingStatus = "UPDATE employees SET meeting = 1, meeting_date = ? WHERE employee_id = ?";
+                connection.query(updateMeetingStatus, [formattedMeetingDate, employeeIdToAssign], (error) => {
+                  if (error) {
+                    res.status(500).json({ message: 'Error en la consulta SQL' });
+                  } else {
+                    res.status(200).json({ message: 'Asignación del trabajador con fecha y hora correcta' });
+                  }
+                });
+              }
+            }
+          });
+        }
+      }
+    }
+  });
+});
+
 connection.connect((err) => {
   if (err) {
     console.error('Error al conectar a la base de datos: ' + err.message);
