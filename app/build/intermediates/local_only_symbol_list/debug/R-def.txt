@@ -1,0 +1,17 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color white
+drawable ic_bell_ringing_fillled
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+id Trabajadorbutton
+id Tutorbutton
+layout activity_main
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Base.Theme.Lab5_IOT
+style Theme.Lab5_IOT
+xml backup_rules
+xml data_extraction_rules

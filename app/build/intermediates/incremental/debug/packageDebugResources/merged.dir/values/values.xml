@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">Lab5_IOT</string>
+    <style name="Base.Theme.Lab5_IOT" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
+    <style name="Theme.Lab5_IOT" parent="Base.Theme.Lab5_IOT"/>
+</resources>
