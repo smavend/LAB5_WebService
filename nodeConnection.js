@@ -116,7 +116,6 @@ app.post('/asignartutorias/:codigoTutor/:codigoTrabajador', (req, res) => {
 app.post('/feedback',  bodyParser.urlencoded({extended: true}), (req, res) => {
   const employeeId = req.body.employeeId;
   const feedback = req.body.feedback;
-
   console.log("Datos recibidos en la solicitud:", employeeId, feedback);
 
   // Realizar las validaciones
