@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
@@ -110,6 +111,22 @@ app.post('/asignartutorias/:codigoTutor/:codigoTrabajador', (req, res) => {
         }
       }
     }
+  });
+});
+app.post('/feedback',  bodyParser.urlencoded({extended: true}), (req, res) => {
+  const employeeId = req.body.employeeId;
+  const feedback = req.body.feedback;
+
+  console.log("Datos recibidos en la solicitud:", employeeId, feedback);
+
+  // Realizar las validaciones
+  const queryTutorManager = "UPDATE employees SET employee_feedback = ? WHERE employee_id = ?";
+  connection.query(queryTutorManager, [feedback, employeeId], (error, results) => {
+    if (error) {
+      res.status(500).json({ message: 'Error en la consulta SQL' });
+    } else {
+      res.status(200).json({ message: 'Se ha actualizado correctamente su nuevo feedback.' });
+    }       
   });
 });
 
